@@ -6,10 +6,12 @@
 #
 # All rights reserved - Do Not Redistribute
 #
-
-remote_file "/tmp/#{node['terraform']['Terraform_Zip_Name']}" do
-  source node['terraform']['Terraform_Zip_Url']
-  action :create
+bash 'get terraform zip' do
+  cwd '/tmp'
+  code <<-EOH
+     wget #{node['terraform']['Terraform_Zip_Url']} --no-check-certificate
+    EOH
+  not_if { ::File.exists?("/tmp/#{node['terraform']['Terraform_Zip_Name']}") }
 end
 
 package "unzip"
